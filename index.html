@@ -18,12 +18,12 @@
         <tr>
           <th>Train</th>
           <th>Destination</th>
-          <th>Minutes Until Departure</th>
+          <th>Time Until Departure</th>
           <th>Next Departure</th>
-          <th>Frequency (min)</th>
+          <th>Frequency</th>
         </tr>
       </thead>
-      <tbody id="schedules-body"> 
+      <tbody id="schedules-body">
       </tbody>
     </table>
 
@@ -37,7 +37,7 @@
         </div>
 
         <div class="form-group">
-          <label for="destination">Destination City<label>
+          <label for="destination">Destination<label>
           <input id="destination" type="text" required>
           <p class="form-feedback" id="destination-feedback" aria-live="polite"></p>
         </div>
@@ -52,11 +52,8 @@
         </div>
         
         <div class="form-group">
-          <label for="frequency">Frequency<label>
+          <label for="frequency">Minutes Between Departures<label>
           <input id="frequency" type="number" min="1" required>
-          <p class="input-note">
-            Enter the amount of minutes between departures.
-          </p>
           <p class="form-feedback" id="frequency-feedback" aria-live="polite"></p>
         </div>
 

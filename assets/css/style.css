@@ -1,3 +1,7 @@
+td, th {
+  padding: .5em;
+}
+
 .form-feedback {
   color: #7f0000;
 }

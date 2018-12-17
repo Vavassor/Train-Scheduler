@@ -15,6 +15,20 @@ class Schedule {
 }
 
 
+function formatDuration(minutesString) {
+  const value = parseInt(minutesString);
+  const hours = Math.floor(value / 60);
+  const minutes = value % 60;
+  let result = "";
+  if (hours > 0) {
+    result += hours + " hours";
+  }
+  if (minutes > 0) {
+    result += " " + minutes + " minutes";
+  }
+  return result;
+}
+
 function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   const unixTime = moment.unix(parseInt(schedule.firstDeparture));
   const now = moment();
@@ -23,7 +37,7 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   const nextDepartureUnformatted = now.add(minutesUntilDeparture, "minutes");
   const nextDeparture = moment(nextDepartureUnformatted).format("hh:mm A");
 
-  minutesUntilDepartureCell.text(minutesUntilDeparture);
+  minutesUntilDepartureCell.text(formatDuration(minutesUntilDeparture));
   nextDepartureCell.text(nextDeparture);
 }
 
@@ -38,7 +52,7 @@ function addSchedule(data, key) {
   const destination = $("<td>").text(schedule.destination);
   const minutesUntilDeparture = $("<td>");
   const nextDeparture = $("<td>");
-  const frequency = $("<td>").text(schedule.frequency);
+  const frequency = $("<td>").text(formatDuration(schedule.frequency));
 
   setTimes(schedule, minutesUntilDeparture, nextDeparture);
 

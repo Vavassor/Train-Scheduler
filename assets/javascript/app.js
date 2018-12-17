@@ -15,6 +15,18 @@ class Schedule {
 }
 
 
+function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
+  const unixTime = moment.unix(parseInt(schedule.firstDeparture));
+  const now = moment();
+  const minutesAgo = now.diff(unixTime, "minutes");
+  const minutesUntilDeparture = minutesAgo % parseInt(schedule.frequency);
+  const nextDepartureUnformatted = now.add(minutesUntilDeparture, "minutes");
+  const nextDeparture = moment(nextDepartureUnformatted).format("HH:mm");
+
+  minutesUntilDepartureCell.text(minutesUntilDeparture);
+  nextDepartureCell.text(nextDeparture);
+}
+
 function addSchedule(data, key) {
   const schedule = new Schedule(data.trainName, data.destination, data.firstDeparture, data.frequency);
   schedules.set(key, schedule);
@@ -24,12 +36,16 @@ function addSchedule(data, key) {
 
   const name = $("<td>").text(schedule.trainName);
   const destination = $("<td>").text(schedule.destination);
-  const firstDeparture = $("<td>").text(schedule.firstDeparture);
+  const minutesUntilDeparture = $("<td>");
+  const nextDeparture = $("<td>");
   const frequency = $("<td>").text(schedule.frequency);
+
+  setTimes(schedule, minutesUntilDeparture, nextDeparture);
 
   row.append(name);
   row.append(destination);
-  row.append(firstDeparture);
+  row.append(minutesUntilDeparture);
+  row.append(nextDeparture);
   row.append(frequency);
 
   $("#schedules-body").append(row);

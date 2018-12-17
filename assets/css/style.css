@@ -1,0 +1,11 @@
+.form-feedback {
+  color: #7f0000;
+}
+
+.input-note {
+  font-size: .8em;
+}
+
+.invalid-input {
+  border: .2em solid #ff0000;
+}

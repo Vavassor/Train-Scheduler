@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" integrity="sha256-CutOzxCRucUsn6C6TcEYsauvvYilEniTXldPa6/wu0k=" crossorigin="anonymous"></script>
   <script src="assets/javascript/app.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
@@ -25,6 +26,43 @@
       <tbody id="schedules-body"> 
       </tbody>
     </table>
+
+    <section>
+      <h2>Add A Schedule</h2>
+      <form id="add-schedule" novalidate>
+        <div class="form-group">
+          <label for="train-name">Train Name<label>
+          <input id="train-name" type="text" required>
+          <p class="form-feedback" id="train-name-feedback" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination City<label>
+          <input id="destination" type="text" required>
+          <p class="form-feedback" id="destination-feedback" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="first-departure">First Departure<label>
+          <input id="first-departure" type="text" required>
+          <p class="input-note">
+            Enter a date and time in the form 12/17/2018 15:00.
+          </p>
+          <p class="form-feedback" id="first-departure-feedback" aria-live="polite"></p>
+        </div>
+        
+        <div class="form-group">
+          <label for="frequency">Frequency<label>
+          <input id="frequency" type="number" min="1" required>
+          <p class="input-note">
+            Enter the amount of minutes between departures.
+          </p>
+          <p class="form-feedback" id="frequency-feedback" aria-live="polite"></p>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+    </section>
   </main>
 </body>
 </html>

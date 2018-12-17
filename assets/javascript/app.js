@@ -2,8 +2,8 @@
 
 const schedulesPath = "schedules/";
 
+let database = null;
 let schedules = new Map();
-
 
 class Schedule {
   constructor(trainName, destination, firstDeparture, frequency) {
@@ -21,7 +21,7 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   const minutesAgo = now.diff(unixTime, "minutes");
   const minutesUntilDeparture = minutesAgo % parseInt(schedule.frequency);
   const nextDepartureUnformatted = now.add(minutesUntilDeparture, "minutes");
-  const nextDeparture = moment(nextDepartureUnformatted).format("HH:mm");
+  const nextDeparture = moment(nextDepartureUnformatted).format("hh:mm A");
 
   minutesUntilDepartureCell.text(minutesUntilDeparture);
   nextDepartureCell.text(nextDeparture);
@@ -80,6 +80,60 @@ function onScheduleRemoved(snapshot) {
   removeSchedule(snapshot.key);
 }
 
+function checkInput(id, message) {
+  const input = $("#" + id);
+  if (!input[0].validity.valid) {
+    input.addClass("invalid-input");
+    $("#" + id + "-feedback").text(message);
+  }
+}
+
+function resetInput(id) {
+  $("#" + id + "-feedback").empty();
+  $("#" + id).removeClass("invalid-input");
+}
+
+function resetFeedback() {
+  resetInput("train-name");
+  resetInput("destination");
+  resetInput("first-departure");
+  resetInput("frequency");
+}
+
+function onSubmitSchedule(form) {
+  resetFeedback();
+
+  if (!form[0].checkValidity()) {
+    checkInput("train-name", "Please enter a name.");
+    checkInput("destination", "Please enter a city name.");
+    checkInput("first-departure", "Please enter a date and time.");
+    checkInput("frequency", "Please enter a number.");
+  } else {
+    const trainName = $("#train-name").val();
+    const destination = $("#destination").val();
+    const firstDepartureUnformatted = $("#first-departure").val();
+    const frequency = $("#frequency").val();
+
+    const startTime = moment(firstDepartureUnformatted, "MM/DD/YYYY HH:mm");
+
+    if (!startTime.isValid()) {
+      $("#first-departure-feedback").text("Please enter the date and time in the correct format.");
+    } else {
+      const firstDeparture = startTime.format("X");
+
+      const ref = database.ref(schedulesPath);
+      ref.push().set({
+        trainName: trainName,
+        destination: destination,
+        firstDeparture: firstDeparture,
+        frequency: frequency,
+      });
+
+      form.trigger("reset");
+    }
+  }
+}
+
 
 $(document).ready(() => {
   const config = {
@@ -93,10 +147,16 @@ $(document).ready(() => {
 
   firebase.initializeApp(config);
 
-  const database = firebase.database();
+  database = firebase.database();
   const ref = database.ref(schedulesPath);
 
   ref.on("child_added", onScheduleAdded);
   ref.on("child_changed", onScheduleChanged);
   ref.on("child_removed", onScheduleRemoved);
+
+  $("#add-schedule").submit((event) => {
+    const form = $(event.currentTarget);
+    event.preventDefault();
+    onSubmitSchedule(form);
+  });
 });

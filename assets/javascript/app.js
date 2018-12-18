@@ -1,9 +1,11 @@
 "use strict";
 
 const schedulesPath = "schedules/";
+const secondsBetweenUpdates = 60;
 
 let database = null;
 let schedules = new Map();
+let updateInterval = null;
 
 class Schedule {
   constructor(trainName, destination, firstDeparture, frequency) {
@@ -33,12 +35,25 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   const unixTime = moment.unix(parseInt(schedule.firstDeparture));
   const now = moment();
   const minutesAgo = now.diff(unixTime, "minutes");
-  const minutesUntilDeparture = minutesAgo % parseInt(schedule.frequency);
+  const frequency = parseInt(schedule.frequency);
+  const minutesUntilDeparture = frequency - (minutesAgo % frequency);
   const nextDepartureUnformatted = now.add(minutesUntilDeparture, "minutes");
   const nextDeparture = moment(nextDepartureUnformatted).format("hh:mm A");
 
   minutesUntilDepartureCell.text(formatDuration(minutesUntilDeparture));
+  minutesUntilDepartureCell.addClass("minutes-until-departure");
+
   nextDepartureCell.text(nextDeparture);
+  nextDepartureCell.addClass("next-departure");
+}
+
+function updateScheduleTimes() {
+  for (const [key, schedule] of schedules) {
+    const row = getRowByKey(key);
+    const minutesUntilDeparture = row.find(".minutes-until-departure");
+    const nextDeparture = row.find(".next-departure");
+    setTimes(schedule, minutesUntilDeparture, nextDeparture);
+  }
 }
 
 function addSchedule(data, key) {
@@ -70,8 +85,12 @@ function changeSchedule(data, key) {
   addSchedule(data, key);
 }
 
+function getRowByKey(key) {
+  return $("#schedules-body tr[data-key=\"" + key + "\"]");
+}
+
 function removeSchedule(key) {
-  const oldRow = $("#schedules-body tr[data-key=\"" + key + "\"]");
+  const oldRow = getRowByKey(key);
   oldRow.remove();
 }
 
@@ -173,4 +192,6 @@ $(document).ready(() => {
     event.preventDefault();
     onSubmitSchedule(form);
   });
+
+  updateInterval = setInterval(updateScheduleTimes, 1000 * secondsBetweenUpdates);
 });

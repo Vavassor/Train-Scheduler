@@ -56,6 +56,10 @@ function updateScheduleTimes() {
   }
 }
 
+function getRowByKey(key) {
+  return $("#schedules-body tr[data-key=\"" + key + "\"]");
+}
+
 function addSchedule(data, key) {
   const schedule = new Schedule(data.trainName, data.destination, data.firstDeparture, data.frequency);
   schedules.set(key, schedule);
@@ -83,10 +87,6 @@ function addSchedule(data, key) {
 function changeSchedule(data, key) {
   removeSchedule(key);
   addSchedule(data, key);
-}
-
-function getRowByKey(key) {
-  return $("#schedules-body tr[data-key=\"" + key + "\"]");
 }
 
 function removeSchedule(key) {

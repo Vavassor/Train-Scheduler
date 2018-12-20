@@ -8,7 +8,7 @@ h2 {
 }
 
 hr {
-  border-color: #ffffff;
+  border-color: #e9ecef;
 }
 
 label {
@@ -19,10 +19,11 @@ label {
   color: #d5d9df !important;
 }
 
-.invalid-feedback-dark {
-  color: #fc4555;
+.head-box {
+  background-color: #e9ecef;
+  height: 1em;
 }
 
-.thead-secondary {
-  background-color: #1f212b;
+.invalid-feedback-dark {
+  color: #fc4555;
 }

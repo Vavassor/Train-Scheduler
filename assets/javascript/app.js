@@ -51,7 +51,7 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   setDuration(minutesTime, minutesUntilDeparture);
   minutesUntilDepartureCell.empty();
   minutesUntilDepartureCell.append(minutesTime);
-  minutesUntilDepartureCell.addClass("minutes-until-departure");
+  minutesUntilDepartureCell.addClass("time-until-departure");
 
   const nextTime = $("<time>");
   nextTime.attr("datetime", nextDepartureMoment.format());
@@ -64,9 +64,9 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
 function updateScheduleTimes() {
   for (const [key, schedule] of schedules) {
     const row = getRowByKey(key);
-    const minutesUntilDeparture = row.find(".minutes-until-departure");
+    const timeUntilDeparture = row.find(".time-until-departure");
     const nextDeparture = row.find(".next-departure");
-    setTimes(schedule, minutesUntilDeparture, nextDeparture);
+    setTimes(schedule, timeUntilDeparture, nextDeparture);
   }
 }
 
@@ -83,22 +83,33 @@ function addSchedule(data, key) {
 
   const name = $("<td>").text(schedule.trainName);
   const destination = $("<td>").text(schedule.destination);
-  const minutesUntilDeparture = $("<td>");
+  const timeUntilDeparture = $("<td>");
   const nextDeparture = $("<td>");
-  
+
   const frequencyTime = $("<time>");
   setDuration(frequencyTime, schedule.frequency);
   const frequency = $("<td>");
   frequency.empty();
   frequency.append(frequencyTime);
 
-  setTimes(schedule, minutesUntilDeparture, nextDeparture);
+  const removal = $("<td>");
+  const remove = $("<button type=\"button\">");
+  remove.addClass("btn");
+  remove.text("Remove");
+  remove.click(() => {
+    const ref = database.ref(schedulesPath + key);
+    ref.remove();
+  });
+  removal.append(remove);
+
+  setTimes(schedule, timeUntilDeparture, nextDeparture);
 
   row.append(name);
   row.append(destination);
-  row.append(minutesUntilDeparture);
+  row.append(timeUntilDeparture);
   row.append(nextDeparture);
   row.append(frequency);
+  row.append(removal);
 
   $("#schedules-body").append(row);
 }

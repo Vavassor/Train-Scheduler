@@ -17,18 +17,24 @@ class Schedule {
 }
 
 
-function formatDuration(minutesString) {
+function setDuration(time, minutesString) {
   const value = parseInt(minutesString);
   const hours = Math.floor(value / 60);
   const minutes = value % 60;
-  let result = "";
+
+  let text = "";
+  let duration = "PT";
   if (hours > 0) {
-    result += hours + " hours";
+    text += hours + " hours";
+    duration += hours + "H";
   }
   if (minutes > 0) {
-    result += " " + minutes + " minutes";
+    text += " " + minutes + " minutes";
+    duration += minutes + "M";
   }
-  return result;
+
+  time.text(text);
+  time.attr("datetime", duration);
 }
 
 function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
@@ -38,12 +44,20 @@ function setTimes(schedule, minutesUntilDepartureCell, nextDepartureCell) {
   const frequency = parseInt(schedule.frequency);
   const minutesUntilDeparture = frequency - (minutesAgo % frequency);
   const nextDepartureUnformatted = now.add(minutesUntilDeparture, "minutes");
-  const nextDeparture = moment(nextDepartureUnformatted).format("hh:mm A");
+  const nextDepartureMoment = moment(nextDepartureUnformatted);
+  const nextDeparture = nextDepartureMoment.format("hh:mm A");
 
-  minutesUntilDepartureCell.text(formatDuration(minutesUntilDeparture));
+  const minutesTime = $("<time>");
+  setDuration(minutesTime, minutesUntilDeparture);
+  minutesUntilDepartureCell.empty();
+  minutesUntilDepartureCell.append(minutesTime);
   minutesUntilDepartureCell.addClass("minutes-until-departure");
 
-  nextDepartureCell.text(nextDeparture);
+  const nextTime = $("<time>");
+  nextTime.attr("datetime", nextDepartureMoment.format());
+  nextTime.text(nextDeparture);
+  nextDepartureCell.empty();
+  nextDepartureCell.append(nextTime);
   nextDepartureCell.addClass("next-departure");
 }
 
@@ -71,7 +85,12 @@ function addSchedule(data, key) {
   const destination = $("<td>").text(schedule.destination);
   const minutesUntilDeparture = $("<td>");
   const nextDeparture = $("<td>");
-  const frequency = $("<td>").text(formatDuration(schedule.frequency));
+  
+  const frequencyTime = $("<time>");
+  setDuration(frequencyTime, schedule.frequency);
+  const frequency = $("<td>");
+  frequency.empty();
+  frequency.append(frequencyTime);
 
   setTimes(schedule, minutesUntilDeparture, nextDeparture);
 
@@ -116,54 +135,57 @@ function onScheduleRemoved(snapshot) {
 function checkInput(id, message) {
   const input = $("#" + id);
   if (!input[0].validity.valid) {
-    input.addClass("invalid-input");
     $("#" + id + "-feedback").text(message);
   }
 }
 
-function resetInput(id) {
-  $("#" + id + "-feedback").empty();
-  $("#" + id).removeClass("invalid-input");
-}
-
-function resetFeedback() {
-  resetInput("train-name");
-  resetInput("destination");
-  resetInput("first-departure");
-  resetInput("frequency");
-}
-
 function onSubmitSchedule(form) {
-  resetFeedback();
+  let formValid = form[0].checkValidity();
 
-  if (!form[0].checkValidity()) {
+  if (!formValid) {
     checkInput("train-name", "Please enter a name.");
     checkInput("destination", "Please enter a city name.");
-    checkInput("first-departure", "Please enter a date and time.");
-    checkInput("frequency", "Please enter a number.");
+    checkInput("first-departure", "Please enter a valid date and time.");
+    checkInput("frequency", "Please enter a valid number.");
+  }
+
+  const trainName = $("#train-name").val();
+  const destination = $("#destination").val();
+  const firstDepartureUnformatted = $("#first-departure").val();
+  const frequency = $("#frequency").val();
+
+  const startTime = moment(firstDepartureUnformatted, "MM/DD/YYYY HH:mm");
+
+  if (!startTime.isValid()) {
+    const message = "Please enter the date and time in the correct format.";
+    $("#first-departure-feedback").text(message);
+    $("#first-departure")[0].setCustomValidity(message);
+
+    formValid = false;
   } else {
-    const trainName = $("#train-name").val();
-    const destination = $("#destination").val();
-    const firstDepartureUnformatted = $("#first-departure").val();
-    const frequency = $("#frequency").val();
+    $("#first-departure")[0].setCustomValidity("");
+  }
+  
+  if (formValid) {
+    const firstDeparture = startTime.format("X");
 
-    const startTime = moment(firstDepartureUnformatted, "MM/DD/YYYY HH:mm");
+    const ref = database.ref(schedulesPath);
+    ref.push().set({
+      trainName: trainName,
+      destination: destination,
+      firstDeparture: firstDeparture,
+      frequency: frequency,
+    });
 
-    if (!startTime.isValid()) {
-      $("#first-departure-feedback").text("Please enter the date and time in the correct format.");
-    } else {
-      const firstDeparture = startTime.format("X");
+    form.removeClass("was-validated");
+    $("#train-name")[0].setCustomValidity("");
+    $("#destination")[0].setCustomValidity("");
+    $("#first-departure")[0].setCustomValidity("");
+    $("#frequency")[0].setCustomValidity("");
 
-      const ref = database.ref(schedulesPath);
-      ref.push().set({
-        trainName: trainName,
-        destination: destination,
-        firstDeparture: firstDeparture,
-        frequency: frequency,
-      });
-
-      form.trigger("reset");
-    }
+    form.trigger("reset");
+  } else {
+    form.addClass("was-validated");
   }
 }
 

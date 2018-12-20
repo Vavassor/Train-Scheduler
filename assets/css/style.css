@@ -1,4 +1,30 @@
+h2 {
+  color: #ffffff;
+  font-family: "Raleway", sans-serif;
+}
+
+hr {
+  border-color: #ffffff;
+}
+
+label {
+  color: #ffffff;
+}
+
 .container-extra {
+  background-color: #2f3338;
   min-width: 400px;
   overflow-x: scroll;
+}
+
+.form-text-dark {
+  color: #d5d9df !important;
+}
+
+.invalid-feedback-dark {
+  color: #fc4555;
+}
+
+.thead-secondary {
+  background-color: #1f212b;
 }

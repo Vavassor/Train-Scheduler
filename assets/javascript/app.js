@@ -95,6 +95,7 @@ function addSchedule(data, key) {
   const removal = $("<td>");
   const remove = $("<button type=\"button\">");
   remove.addClass("btn");
+  remove.addClass("btn-secondary");
   remove.text("Remove");
   remove.click(() => {
     const ref = database.ref(schedulesPath + key);

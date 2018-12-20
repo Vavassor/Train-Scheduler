@@ -11,6 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" integrity="sha256-CutOzxCRucUsn6C6TcEYsauvvYilEniTXldPa6/wu0k=" crossorigin="anonymous"></script>
   <script src="assets/javascript/app.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
@@ -19,9 +20,12 @@
     <div class="row mt-5">
       <div class="col-12 col-lg-8 offset-lg-2">
         <h2>Train Schedules</h2>
+
+        <hr class="mb-4">
+
         <div class="table-responsive-md">
-          <table class="table table-bordered">
-            <thead>
+          <table class="table table-bordered table-dark">
+            <thead class="thead-light">
               <tr>
                 <th scope="col">Train</th>
                 <th scope="col">Destination</th>
@@ -42,12 +46,14 @@
       <section class="col-12 col-lg-8 offset-lg-2">
         <h2>Add A Schedule</h2>
 
+        <hr class="mb-4">
+
         <form id="add-schedule" novalidate>
           <div class="form-group row">
             <label class="col-3 col-form-label" for="train-name">Train Name</label>
             <div class="col-9">
               <input class="form-control" id="train-name" type="text" required>
-              <div class="invalid-feedback" id="train-name-feedback" aria-live="polite"></div>
+              <div class="invalid-feedback invalid-feedback-dark" id="train-name-feedback" aria-live="polite"></div>
             </div>
           </div>
 
@@ -55,7 +61,7 @@
             <label class="col-3 col-form-label" for="destination">Destination</label>
             <div class="col-9">
               <input class="form-control" id="destination" type="text" required>
-              <div class="invalid-feedback" id="destination-feedback" aria-live="polite"></div>
+              <div class="invalid-feedback invalid-feedback-dark" id="destination-feedback" aria-live="polite"></div>
             </div>
           </div>
 
@@ -63,10 +69,10 @@
             <label class="col-3 col-form-label" for="first-departure">First Departure</label>
             <div class="col-9">
               <input class="form-control" id="first-departure" type="text" aria-describedby="input-note" required>
-              <small class="form-text text-muted" id="input-note">
+              <small class="form-text text-muted form-text-dark" id="input-note">
                 Enter a date and time in the form 12/17/2018 15:00.
               </small>
-              <div class="invalid-feedback" id="first-departure-feedback" aria-live="polite"></div>
+              <div class="invalid-feedback invalid-feedback-dark" id="first-departure-feedback" aria-live="polite"></div>
             </div>
           </div>
           
@@ -74,7 +80,7 @@
             <label class="col-3 col-form-label" for="frequency">Minutes Between Departures</label>
             <div class="col-9">
               <input class="form-control" id="frequency" type="number" min="1" required>
-              <div class="invalid-feedback" id="frequency-feedback" aria-live="polite"></div>
+              <div class="invalid-feedback invalid-feedback-dark" id="frequency-feedback" aria-live="polite"></div>
             </div>
           </div>
 

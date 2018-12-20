@@ -1,3 +1,7 @@
+body {
+  background-color: #2f3338;
+}
+
 h2 {
   color: #ffffff;
   font-family: "Raleway", sans-serif;
@@ -9,12 +13,6 @@ hr {
 
 label {
   color: #ffffff;
-}
-
-.container-extra {
-  background-color: #2f3338;
-  min-width: 400px;
-  overflow-x: scroll;
 }
 
 .form-text-dark {
